@@ -1,12 +1,13 @@
 from app.db.session import engine
 from app.db.base import Base
 
-# import all models so SQLAlchemy knows about them
+# importing models registers them in SQLAlchemy metadata
 from app.models.user import User
 from app.models.role import Role
-from app.models.permission import Resource, Action, Permission
-from app.models import user_roles, role_permissions
+from app.models.permission import Permission
+from app.models.user_role import UserRole
+from app.models.role_permission import RolePermission
 
 
-def init_db():
+def init_db() -> None:
     Base.metadata.create_all(bind=engine)
