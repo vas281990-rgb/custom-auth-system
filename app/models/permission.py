@@ -1,32 +1,23 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
 from app.db.base import Base
 
 
-class Resource(Base):
-    __tablename__ = "resources"
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String, unique=True, nullable=False)
-
-
-class Action(Base):
-    __tablename__ = "actions"
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String, unique=True, nullable=False)
-    
 class Permission(Base):
+    """
+    Permission model.
+
+    Represents a single allowed action in the system.
+    Example: "users:create", "notes:read"
+    """
+
     __tablename__ = "permissions"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, index=True)
 
-    resource_id = Column(Integer, ForeignKey("resources.id"), nullable=False)
-    action_id = Column(Integer, ForeignKey("actions.id"), nullable=False)
-
-    resource = relationship("Resource")
-    action = relationship("Action")
+    name = Column(String(255), unique=True, nullable=False)
+    description = Column(String(255), nullable=True)
 
     roles = relationship(
         "Role",

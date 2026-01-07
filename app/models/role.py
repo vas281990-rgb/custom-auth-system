@@ -5,11 +5,19 @@ from app.db.base import Base
 
 
 class Role(Base):
+    """
+    Role model.
+
+    Represents a role assigned to users.
+    Example: admin, manager, user
+    """
+
     __tablename__ = "roles"
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String, unique=True, nullable=False)
-    description = Column(String)
+    id = Column(Integer, primary_key=True, index=True)
+
+    name = Column(String(100), unique=True, nullable=False)
+    description = Column(String(255), nullable=True)
 
     users = relationship(
         "User",

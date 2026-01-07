@@ -1,17 +1,5 @@
-from sqlalchemy import Table, Column, Integer, ForeignKey
-
-from app.db.base import Base
-
-user_roles = Table(
-    "user_roles",
-    Base.metadata,
-    Column("user_id", Integer, ForeignKey("users.id"), primary_key=True),
-    Column("role_id", Integer, ForeignKey("roles.id"), primary_key=True),
-)
-
-role_permissions = Table(
-    "role_permissions",
-    Base.metadata,
-    Column("role_id", Integer, ForeignKey("roles.id"), primary_key=True),
-    Column("permission_id", Integer, ForeignKey("permissions.id"), primary_key=True),
-)
+from app.models.user import User
+from app.models.role import Role
+from app.models.permission import Permission
+from app.models.user_role import UserRole
+from app.models.role_permission import RolePermission
