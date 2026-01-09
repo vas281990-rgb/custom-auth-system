@@ -1,15 +1,29 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-DATABASE_URL = "sqlite:///./auth.db"
+from app.core.config import settings
 
+# Create SQLAlchemy engine
 engine = create_engine(
-    DATABASE_URL,
-    connect_args={"check_same_thread": False}  # needed for SQLite
+    settings.DATABASE_URL,
+    connect_args={"check_same_thread": False},  # needed for SQLite
 )
 
+# Create session factory
 SessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False,
-    bind=engine
+    bind=engine,
 )
+
+
+def get_db():
+    """
+    FastAPI dependency.
+    Yields a database session and ensures it's closed.
+    """
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

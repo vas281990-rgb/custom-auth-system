@@ -1,11 +1,16 @@
 from fastapi import APIRouter, Depends
-from app.api.deps import require_permission
+from sqlalchemy.orm import Session
 
-router = APIRouter()
+from app.db.session import get_db
+from app.deps.permissions import require_permission
+from app.models.user import User
 
-@router.post(
-    "/users",
-    dependencies=[Depends(require_permission("users:create"))]
+router = APIRouter(prefix="/users", tags=["Users"])
+
+
+@router.get(
+    "/",
+    dependencies=[Depends(require_permission("users:read"))],
 )
-def create_user():
-    return {"status": "created"}
+def list_users(db: Session = Depends(get_db)):
+    return db.query(User).all()
