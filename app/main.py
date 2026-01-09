@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from app.routers import auth
+
+from app.routers import auth, users
 
 app = FastAPI(
     title="Custom Auth System",
@@ -7,8 +8,11 @@ app = FastAPI(
     version="1.0.0",
 )
 
+
 @app.get("/", tags=["Health"])
 def health_check():
     return {"status": "ok"}
 
+
 app.include_router(auth.router)
+app.include_router(users.router)
