@@ -35,7 +35,10 @@ def login(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="User account is inactive",
         )
-
+    
+@router.post("/logout")
+def logout():
+    return {"message": "Logged out"}
 
 @router.post(
     "/register",

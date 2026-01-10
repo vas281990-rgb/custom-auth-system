@@ -19,6 +19,7 @@ def seed_rbac():
             ("users:read", "Read users"),
             ("users:update", "Update users"),
             ("users:delete", "Delete users"),
+            ("reports:read", "Read reports"),
         ]
 
         permissions = {}
@@ -51,14 +52,12 @@ def seed_rbac():
                 name="user",
                 description="Regular user"
             )
-            user_role.permissions = [
-                permissions[]
-            ]
+           
             db.add(user_role)
 
-        # -------------------------
-        # Admin user
-        # -------------------------
+   
+     # Admin user
+        
         admin_user = db.query(User).filter_by(email="admin@example.com").first()
         if not admin_user:
             admin_user = User(
