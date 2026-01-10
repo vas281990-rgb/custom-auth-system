@@ -4,6 +4,8 @@ from sqlalchemy.orm import Session
 
 from app.db.session import get_db
 from app.services.auth import login_user
+from app.services.auth_service import register_user
+from app.schemas.auth import RegisterRequest, RegisterResponse
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -13,15 +15,11 @@ def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db),
 ):
-    """
-    OAuth2 compatible login.
-    username = email
-    password = password
-    """
+    
     try:
         token = login_user(
             db,
-            email=form_data.username,  # <-- ВАЖНО
+            email=form_data.username,
             password=form_data.password,
         )
         return {
@@ -33,3 +31,22 @@ def login(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password",
         )
+
+
+@router.post(
+    "/register",
+    response_model=RegisterResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+def register(
+    data: RegisterRequest,
+    db: Session = Depends(get_db),
+):
+   
+    user = register_user(
+        db=db,
+        email=data.email,
+        password=data.password,
+        full_name=data.full_name,
+    )
+    return user
