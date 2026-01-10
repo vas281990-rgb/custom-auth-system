@@ -52,7 +52,7 @@ def seed_rbac():
                 description="Regular user"
             )
             user_role.permissions = [
-                permissions["users:read"]
+                permissions[]
             ]
             db.add(user_role)
 

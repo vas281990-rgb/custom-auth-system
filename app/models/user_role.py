@@ -10,11 +10,15 @@ class UserRole(Base):
 
     __tablename__ = "user_roles"
 
+# Reference to the user
     user_id = Column(
         Integer,
         ForeignKey("users.id", ondelete="CASCADE"),
         primary_key=True
     )
+
+# Reference to the role
+# Primary_key=True on both columns not to have duplicates
 
     role_id = Column(
         Integer,

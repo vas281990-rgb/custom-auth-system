@@ -14,11 +14,14 @@ class Permission(Base):
 
     __tablename__ = "permissions"
 
+# Unique ID for each permission
     id = Column(Integer, primary_key=True, index=True)
 
+# Technical name of the permission (unique)
     name = Column(String(255), unique=True, nullable=False)
     description = Column(String(255), nullable=True)
 
+# Relationship back to Role model through the role_permissions association table
     roles = relationship(
         "Role",
         secondary="role_permissions",
