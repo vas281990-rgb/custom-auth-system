@@ -10,19 +10,18 @@ router = APIRouter(
     prefix="/users",
     tags=["Users"],
 )
+
 @router.get("/me")
 def get_me(
     current_user: User = Depends(get_current_user),
 ):
-    """
-    Returns the currently authenticated user.
-    """
     return {
         "id": current_user.id,
         "email": current_user.email,
         "full_name": current_user.full_name,
         "is_active": current_user.is_active,
     }
+
 @router.get(
     "",
     dependencies=[Depends(require_permission("users:read"))],
@@ -30,10 +29,6 @@ def get_me(
 def get_users(
     db: Session = Depends(get_db),
 ):
-    """
-    Returns all users.
-    Requires permission: users:read
-    """
     users = db.query(User).all()
 
     return [
@@ -45,6 +40,7 @@ def get_users(
         }
         for user in users
     ]
+
 @router.delete(
     "/{user_id}",
     status_code=status.HTTP_204_NO_CONTENT,
@@ -54,10 +50,6 @@ def delete_user(
     user_id: int,
     db: Session = Depends(get_db),
 ):
-    """
-    Soft delete user.
-    Requires permission: users:delete
-    """
     user = db.query(User).filter(User.id == user_id).first()
 
     if not user:

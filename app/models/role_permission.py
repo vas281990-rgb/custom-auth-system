@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, ForeignKey
 
-from app.db.base import Base
+from app.database import Base
 
 
 class RolePermission(Base):
