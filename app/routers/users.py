@@ -11,6 +11,7 @@ router = APIRouter(
     tags=["Users"],
 )
 
+
 @router.get("/me")
 def get_me(
     current_user: User = Depends(get_current_user),
@@ -22,6 +23,7 @@ def get_me(
         "is_active": current_user.is_active,
     }
 
+
 @router.get(
     "",
     dependencies=[Depends(require_permission("users:read"))],
@@ -29,7 +31,11 @@ def get_me(
 def get_users(
     db: Session = Depends(get_db),
 ):
-    users = db.query(User).all()
+    users = (
+        db.query(User)
+        .filter(User.is_deleted == False)
+        .all()
+    )
 
     return [
         {
@@ -40,6 +46,7 @@ def get_users(
         }
         for user in users
     ]
+
 
 @router.delete(
     "/{user_id}",
@@ -58,5 +65,7 @@ def delete_user(
             detail="User not found",
         )
 
+    # Soft delete
     user.is_deleted = True
+    user.is_active = False
     db.commit()

@@ -2,7 +2,11 @@ from sqlalchemy.orm import Session
 
 from app.models.user import User
 from app.models.role import Role
-from app.core.security import hash_password, verify_password, create_access_token
+from app.core.security import (
+    hash_password,
+    verify_password,
+    create_access_token,
+)
 
 
 def register_user(
@@ -12,14 +16,17 @@ def register_user(
     password: str,
     full_name: str,
 ) -> User:
+    # Check if user already exists
     existing_user = db.query(User).filter(User.email == email).first()
     if existing_user:
         raise ValueError("User already exists")
 
+    # Get default role
     role = db.query(Role).filter(Role.name == "user").first()
     if not role:
         raise RuntimeError("Default role not found")
 
+    # Create user
     user = User(
         email=email,
         full_name=full_name,
@@ -44,10 +51,15 @@ def login_user(
 ) -> str:
     user = db.query(User).filter(User.email == email).first()
 
+    # User not found or password invalid
     if not user or not verify_password(password, user.password_hash):
         raise ValueError("Invalid credentials")
 
-    if user.is_deleted or not user.is_active:
-        raise PermissionError("User inactive")
+    # Account disabled or soft-deleted
+    if not user.is_active or user.is_deleted:
+        raise PermissionError("User inactive or deleted")
 
-    return create_access_token(data={"sub": str(user.id)})
+    # Create JWT token
+    return create_access_token(
+        data={"sub": str(user.id)}
+    )

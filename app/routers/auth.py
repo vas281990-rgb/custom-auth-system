@@ -15,7 +15,6 @@ def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db),
 ):
-    
     try:
         token = login_user(
             db,
@@ -31,6 +30,11 @@ def login(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password",
         )
+    except PermissionError:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User account is inactive",
+        )
 
 
 @router.post(
@@ -42,7 +46,6 @@ def register(
     data: RegisterRequest,
     db: Session = Depends(get_db),
 ):
-   
     user = register_user(
         db=db,
         email=data.email,
