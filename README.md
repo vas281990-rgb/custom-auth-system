@@ -1,113 +1,69 @@
 # Custom Authentication & Authorization System (FastAPI)
 
-## 📌 Project Overview
+##  Project Overview
+This is a custom-built backend authentication and authorization system. The primary goal was to design a secure, scalable architecture from scratch without relying on high-level "magic" frameworks. It features a complete **Role-Based Access Control (RBAC)** system and secure user lifecycle management.
 
-This project is a custom-built backend authentication and authorization system implemented with **FastAPI** and **SQLAlchemy**, without using ready-made authentication frameworks.
-
-The main goal is to demonstrate the ability to design and implement:
-- a custom authentication mechanism
-- role-based access control (RBAC)
-- permission-based resource protection
-- secure user lifecycle management
-
----
-
-## 🔐 Authentication
-
-### Registration
-Users can register by providing:
-- full name
-- email
-- password
-
-Passwords are securely hashed before being stored in the database.
-
-### Login
-Users authenticate using email and password.
-After successful login, the system issues a **JWT access token**.
-
-### Logout
-Logout is implemented using a stateless JWT approach.
-The client invalidates the session by removing the token.
-
-### User Identification
-All protected endpoints identify users via JWT tokens.
-
----
-
-## 👤 User Management
-
-- Users can view their own profile
-- Admin users can view all users
-- User deletion is implemented as **soft delete**
-  - `is_deleted = true`
-  - `is_active = false`
-- Deleted users cannot log in again
-
----
-
-## 🛂 Authorization (RBAC)
-
-The system uses **Role-Based Access Control** with fine-grained permissions.
-
-### Database Structure
-- `users`
-- `roles`
-- `permissions`
-- `user_roles` (many-to-many)
-- `role_permissions` (many-to-many)
-
-### Access Rules
-- If the user is not authenticated → **401 Unauthorized**
-- If the user is authenticated but lacks permission → **403 Forbidden**
-- Only users with appropriate permissions can access protected resources
-
----
-
-## 🧑‍💼 Admin Capabilities
-
-Admin users can:
-- access protected endpoints
-- manage users
-- control access to resources via permissions
-
-Initial roles and permissions are seeded into the database for demonstration.
-
----
-
-## 🏗️ Business Resources
-
-The system protects application resources using permissions.
-Access to each resource is granted only if the user has the required permission.
-
----
-
-## 🚀 Tech Stack
-
-- Python
-- FastAPI
-- SQLAlchemy
-- JWT
-- PostgreSQL / SQLite
-- Alembic
-
----
-
-## ✅ Key Features Summary
-
-- Custom authentication (no built-in auth frameworks)
-- JWT-based security
-- Soft delete for users
-- Role & permission management
-- Clear separation of concerns (routers, services, models)
-- Ready for extension and scaling
-
----
-
-## 🧠 Design Philosophy
-
+##  Core Logic & Design Philosophy
 This project prioritizes:
-- explicit access control
-- predictable security behavior
-- readable and maintainable code
-- real-world backend architecture
+- **Granular Access Control:** Rights are tied to specific permissions, not just generic roles.
+- **Predictable Security:** Explicit checks for every protected resource.
+- **Clean Architecture:** Strict separation between models, services, and API routes.
+
+---
+
+##  Key Features
+
+### Authentication
+- **Secure Registration:** Includes password hashing (Argon2) and password confirmation validation.
+- **JWT Protection:** Uses JSON Web Tokens for stateless authentication.
+- **User Identification:** Every request is context-aware, identifying the user via the `sub` claim in the JWT.
+
+### User Management
+- **Profile Access:** Users can view and manage their own data.
+- **Soft Delete Logic:** Users are never fully "purged" from the DB. Instead:
+  - `is_deleted` is set to `True`
+  - `is_active` is set to `False`
+  - This ensures data integrity while preventing any further access for the user.
+
+### RBAC System (Role-Based Access Control)
+The system uses a 5-table relational structure to manage access:
+- `users` ↔ `roles` (Many-to-Many via `user_roles`)
+- `roles` ↔ `permissions` (Many-to-Many via `role_permissions`)
+
+**Access Rules:**
+- **401 Unauthorized:** No valid token provided.
+- **403 Forbidden:** Authenticated, but missing the specific required permission (e.g., `reports:read`).
+
+---
+
+## 🏗️ Database Architecture
+
+
+The database schema is designed to be highly flexible. Permissions (e.g., `users:delete`) are linked to Roles (e.g., `Admin`), which are then assigned to Users. This allows for easy permission updates without changing the application code.
+
+---
+
+##  Tech Stack
+- **Python / FastAPI:** High-performance web framework.
+- **SQLAlchemy:** SQL Toolkit and Object-Relational Mapper (ORM).
+- **Argon2:** Modern, secure password hashing algorithm.
+- **SQLite:** Lightweight database for development and demonstration.
+
+---
+
+## How to Setup and Run
+
+1. **Install Dependencies:**
+   ```bash
+   pip install -r requirements.txt
+Initialize Database & Seed Data: This script creates the database structure and adds the default Admin user (admin@example.com / admin123) and initial roles:
+
+Bash
+PYTHONPATH=. python3 setup_db.py
+Launch the Server:
+
+Bash
+uvicorn app.main:app --reload
+Interactive Documentation: Once running, visit http://127.0.0.1:8000/docs to test all endpoints using the Swagger UI.
+
+Created as a demonstration of secure backend architecture.
