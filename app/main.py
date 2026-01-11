@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.api import mock
-from app.routers import auth, users
+from app.routers import auth, users, admin
 
 app = FastAPI(
     title="Custom Auth System",
@@ -11,9 +11,10 @@ app = FastAPI(
 
 @app.get("/", tags=["Health"])
 def health_check():
-    return {"status": "ok"}
+    return {"status": "working"}
 
 
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(mock.router)
+app.include_router(admin.router)

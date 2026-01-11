@@ -11,18 +11,18 @@ router = APIRouter(
     tags=["Users"],
 )
 
-
 @router.get("/me")
 def get_me(
     current_user: User = Depends(get_current_user),
 ):
+    
     return {
         "id": current_user.id,
         "email": current_user.email,
         "full_name": current_user.full_name,
         "is_active": current_user.is_active,
+        "is_deleted": current_user.is_deleted
     }
-
 
 @router.get(
     "",
@@ -31,6 +31,7 @@ def get_me(
 def get_users(
     db: Session = Depends(get_db),
 ):
+
     users = (
         db.query(User)
         .filter(User.is_deleted == False)
@@ -47,7 +48,6 @@ def get_users(
         for user in users
     ]
 
-
 @router.delete(
     "/{user_id}",
     status_code=status.HTTP_204_NO_CONTENT,
@@ -57,6 +57,7 @@ def delete_user(
     user_id: int,
     db: Session = Depends(get_db),
 ):
+   
     user = db.query(User).filter(User.id == user_id).first()
 
     if not user:
@@ -65,7 +66,7 @@ def delete_user(
             detail="User not found",
         )
 
-    # Soft delete
     user.is_deleted = True
     user.is_active = False
     db.commit()
+    return None 

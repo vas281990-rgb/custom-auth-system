@@ -11,9 +11,9 @@ def seed_rbac():
     db: Session = SessionLocal()
 
     try:
-        # -------------------------
-        # Permissions
-        # -------------------------
+        
+ # Permissions
+
         permissions_data = [
             ("users:create", "Create users"),
             ("users:read", "Read users"),
@@ -34,9 +34,8 @@ def seed_rbac():
                 db.flush()  # get id
             permissions[name] = permission
 
-        # -------------------------
         # Roles
-        # -------------------------
+
         admin_role = db.query(Role).filter_by(name="admin").first()
         if not admin_role:
             admin_role = Role(
@@ -77,3 +76,6 @@ def seed_rbac():
         print("❌ RBAC seed failed:", e)
     finally:
         db.close()
+
+if __name__ == "__main__":
+    seed_rbac()
