@@ -17,8 +17,7 @@ except ImportError:
 
 def setup():
     """
-    Database initialization script.
-    Creates all tables and populates them with initial RBAC data.
+    Main database setup script: creates tables and populates initial data.
     """
     print("--- Starting Database Setup ---")
     

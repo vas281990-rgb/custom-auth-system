@@ -15,6 +15,7 @@ router = APIRouter(
 def read_current_user(
     current_user: User = Depends(get_current_user),
 ):
+    """Get profile of the currently logged-in user"""
     return current_user
 
 
@@ -24,6 +25,7 @@ def update_current_user(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    """Update personal profile information"""
     if data.full_name is not None:
         current_user.full_name = data.full_name
 
@@ -38,7 +40,9 @@ def delete_current_user(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    """Self-deletion: deactivates account (Soft Delete)"""
+    # Deactivate account according to requirements
     current_user.is_active = False
-    # current_user.is_deleted = True  # ← только если поле есть
+    urrent_user.is_deleted = True
 
     db.commit()

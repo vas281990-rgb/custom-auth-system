@@ -1,5 +1,4 @@
 from sqlalchemy.orm import Session
-
 from app.models.user import User
 
 
@@ -32,5 +31,5 @@ def user_has_permission(
             if permission.name == permission_name:
                 return True
 
-    return False
+    return False # No matching permission found in any role
 

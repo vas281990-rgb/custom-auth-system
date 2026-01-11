@@ -9,7 +9,7 @@ engine = create_engine(
     connect_args={"check_same_thread": False},  # needed for SQLite
 )
 
-# Create session factory
+# Create session factory for database operations
 SessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False,

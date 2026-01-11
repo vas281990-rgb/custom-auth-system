@@ -6,7 +6,7 @@ from app.core.security import get_current_user
 from app.services.rbac import user_has_permission
 from app.models.user import User
 
-
+# This factory creates a dependency to check for specific user permissions
 def require_permission(permission_name: str):
     """
     FastAPI dependency factory.
@@ -25,6 +25,7 @@ def require_permission(permission_name: str):
             permission_name=permission_name,
         )
 
+# If permission is missing - 403 Forbidden error
         if not has_permission:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,

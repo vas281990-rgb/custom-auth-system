@@ -1,7 +1,7 @@
-fastapi
-uvicorn
-sqlalchemy
-python-jose[cryptography]
-passlib[argon2]
-pydantic-settings
-python-multipart
+fastapi                   # Web framework
+uvicorn                   # ASGI server to run the app
+sqlalchemy                # Database ORM
+python-jose[cryptography] # JWT token logic
+passlib[argon2]           # Password hashing
+pydantic-settings         # Environment variables management
+python-multipart          # Form data support for login

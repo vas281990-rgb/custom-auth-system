@@ -12,6 +12,7 @@ router = APIRouter(prefix="/admin", tags=["Admin (RBAC Management)"])
 
 @router.get("/roles", dependencies=[Depends(require_permission("users:update"))])
 def list_roles(db: Session = Depends(get_db)):
+    """Fetch all available roles and their associated permissions"""
     roles = db.query(Role).all()
     return [
         {
@@ -24,12 +25,14 @@ def list_roles(db: Session = Depends(get_db)):
 
 @router.post("/users/{user_id}/assign-role/{role_id}", dependencies=[Depends(require_permission("users:update"))])
 def assign_role_to_user(user_id: int, role_id: int, db: Session = Depends(get_db)):
+    """Assign a specific role to a user by their IDs"""
     user = db.query(User).filter(User.id == user_id).first()
     role = db.query(Role).filter(Role.id == role_id).first()
     
     if not user or not role:
         raise HTTPException(status_code=404, detail="User or Role not found")
     
+    # Check if the user already has this role to prevent duplicates
     if role not in user.roles:
         user.roles.append(role)
         db.commit()

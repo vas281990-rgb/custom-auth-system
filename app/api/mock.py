@@ -4,12 +4,13 @@ from app.api.deps import require_permission
 from app.core.security import get_current_user
 from app.models.user import User
 
+# Router for mock business resources
 router = APIRouter(
     prefix="/reports",
     tags=["Mock Business"],
 )
 
-# Fake business data (no database needed)
+# Mock business data to demonstrate resource protection
 FAKE_REPORTS = [
     {"id": 1, "title": "Financial Report"},
     {"id": 2, "title": "User Activity Report"},
@@ -18,6 +19,7 @@ FAKE_REPORTS = [
 
 @router.get(
     "",
+    # This endpoint is protected by the RBAC permission system
     dependencies=[Depends(require_permission("reports:read"))],
 )
 def get_reports(

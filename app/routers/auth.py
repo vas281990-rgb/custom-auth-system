@@ -14,6 +14,7 @@ def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db),
 ):
+    """Authenticate user and return a JWT access token"""
     try:
         token = login_user(
             db,
@@ -30,6 +31,7 @@ def login(
             detail="Invalid email or password",
         )
     except PermissionError:
+        # Handle cases where the account is soft-deleted or inactive
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="User account is inactive",
@@ -37,6 +39,7 @@ def login(
     
 @router.post("/logout")
 def logout():
+    """Endpoint for logout (stateless JWT invalidation happens on client side)"""
     return {"message": "Logged out"}
 
 @router.post(
@@ -48,6 +51,7 @@ def register(
     data: RegisterRequest,
     db: Session = Depends(get_db),
 ):
+    """Register a new user in the system"""
     user = register_user(
         db=db,
         email=data.email,
