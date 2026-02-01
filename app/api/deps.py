@@ -35,3 +35,6 @@ def require_permission(permission_name: str):
         return current_user
 
     return permission_checker
+
+def get_pagination_params(offset: int = 0, limit: int = 10):
+    return {'offset': offset, "limit": limit}
